@@ -325,10 +325,6 @@ public class TextEditorWindow extends javax.swing.JFrame {
 
     private void menuItemPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemPasteActionPerformed
         try {
-            Clipboard clipBoard = getToolkit().getSystemClipboard(); // Used to cut,copy and paste functions
-            Transferable pasteText = clipBoard.getContents(TextEditorWindow.this);
-            String sel = (String) pasteText.getTransferData(DataFlavor.stringFlavor); // Do know what this line is for :(
-            //textArea.replaceRange(sel, textArea.getSelectionStart(), textArea.getSelectionEnd());
             textArea.paste();
         } 
         catch (Exception e) {
@@ -476,7 +472,6 @@ public class TextEditorWindow extends javax.swing.JFrame {
     }
     
     public void openFile() {
-        System.out.println("OPEN FILE ");
         try {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Select a file to open");
@@ -496,20 +491,11 @@ public class TextEditorWindow extends javax.swing.JFrame {
             }
             reader.close();
 
-//            ArrayList<Paragraph> ps = StringHandler.getParagraphs(fileContent);
-//            for (int i = 0; i < ps.size(); i++) {
-//                System.out.println("P# " + i);
-//                System.out.println(ps.get(i).getText());
-//            }
-
             fileName = currentFile.getName();
             String fileExtension = getFileExtension(fileName).toUpperCase();
 
             FileExtension extension = FileExtension.valueOf(fileExtension);
-            System.out.println("Extension: " + extension.toString());
-            System.out.println("Content: " + fileContent);
             String unformattedText = fileFormatter.unformatFile(fileContent, extension);
-            System.out.println("FT: " + unformattedText);
 
             textArea.setText(unformattedText);
             this.setTitle(windowTitle + " - " + fileName);

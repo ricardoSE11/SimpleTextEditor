@@ -5,8 +5,10 @@ package abctexteditor.Files;
 public class TXTFileFormat implements IFileFormat {
 
     private static IFileFormat singletonInstance = null;
-    
-    @Override
+
+    private TXTFileFormat() {
+    }
+  
     public static IFileFormat getInstance() {
         if (singletonInstance == null){
             singletonInstance = new TXTFileFormat();

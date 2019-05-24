@@ -41,6 +41,15 @@ public class Paragraph {
         return text;
     }
     
+    public String getOneLineText(){
+        String text = "";
+        for (String currentLine : lines) {
+            text += currentLine;
+        }
+
+        return text;
+    }
+    
     
     
 }
