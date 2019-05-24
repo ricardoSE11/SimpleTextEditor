@@ -145,6 +145,11 @@ public class JSONFileFormat implements IFileFormat{
     }
     
     // </editor-fold>
+
+    @Override
+    public IFileFormat getInstance() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 
 }

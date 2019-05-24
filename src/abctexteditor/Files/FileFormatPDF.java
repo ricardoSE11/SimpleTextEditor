@@ -22,7 +22,18 @@ import com.itextpdf.text.pdf.PdfWriter;
  *
  * @author juanj
  */
-public class FileSaverPDF implements IFileFormat{
+public class FileFormatPDF implements IFileFormat{
+    
+    private static FileFormatPDF instance;
+    
+    @Override
+    public IFileFormat getInstance() {
+        if(instance == null){
+            instance = new FileFormatPDF();
+        }
+        return instance;
+    }
+    
     
     @Override
     public String applyFormat(String fileContent) {
@@ -66,6 +77,7 @@ public class FileSaverPDF implements IFileFormat{
     public String removeFormat(String fileContent) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     
     
 }

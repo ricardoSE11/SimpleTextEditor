@@ -26,5 +26,10 @@ public class XMLFileFormat implements IFileFormat{
         System.out.println("I remove XML format to the text before it is opened");
         return unformattedText;
     }
+
+    @Override
+    public IFileFormat getInstance() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
