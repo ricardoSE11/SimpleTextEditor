@@ -73,7 +73,7 @@ public class FileFormatPDF implements IFileFormat{
 
     @Override
     public String removeFormat(String fileContent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return fileContent;
     }
 
     
