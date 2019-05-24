@@ -325,10 +325,6 @@ public class TextEditorWindow extends javax.swing.JFrame {
 
     private void menuItemPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemPasteActionPerformed
         try {
-            Clipboard clipBoard = getToolkit().getSystemClipboard(); // Used to cut,copy and paste functions
-            Transferable pasteText = clipBoard.getContents(TextEditorWindow.this);
-            String sel = (String) pasteText.getTransferData(DataFlavor.stringFlavor); // Do know what this line is for :(
-            //textArea.replaceRange(sel, textArea.getSelectionStart(), textArea.getSelectionEnd());
             textArea.paste();
         } 
         catch (Exception e) {
