@@ -3,9 +3,15 @@ package abctexteditor.Files;
 
 public class XMLFileFormat implements IFileFormat{
 
-    public XMLFileFormat() {
-    }
+    private static IFileFormat singletonInstance = null;
 
+    @Override
+    public static IFileFormat getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = new XMLFileFormat();
+        }
+        return singletonInstance;
+    }
     
     @Override
     public String applyFormat(String fileContent) {
@@ -25,11 +31,6 @@ public class XMLFileFormat implements IFileFormat{
         
         System.out.println("I remove XML format to the text before it is opened");
         return unformattedText;
-    }
-
-    @Override
-    public IFileFormat getInstance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

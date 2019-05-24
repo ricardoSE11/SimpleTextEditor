@@ -1,13 +1,11 @@
 package abctexteditor.Files;
 
-import com.itextpdf.text.Chapter;
 import java.io.FileOutputStream;
  
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -27,7 +25,7 @@ public class FileFormatPDF implements IFileFormat{
     private static FileFormatPDF instance;
     
     @Override
-    public IFileFormat getInstance() {
+    public static IFileFormat getInstance() {
         if(instance == null){
             instance = new FileFormatPDF();
         }
