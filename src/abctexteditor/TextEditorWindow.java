@@ -495,12 +495,6 @@ public class TextEditorWindow extends javax.swing.JFrame {
             }
             reader.close();
 
-//            ArrayList<Paragraph> ps = StringHandler.getParagraphs(fileContent);
-//            for (int i = 0; i < ps.size(); i++) {
-//                System.out.println("P# " + i);
-//                System.out.println(ps.get(i).getText());
-//            }
-
             fileName = currentFile.getName();
             String fileExtension = getFileExtension(fileName).toUpperCase();
 
