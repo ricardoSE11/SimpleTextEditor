@@ -12,7 +12,12 @@ class FileFormatFactory {
         
         switch(fileExtension){
             case TXT:{
-                System.out.println("");
+                choosenFormat = TXTFileFormat.getInstance();
+            }
+            break;
+            
+            case TABTXT:{
+                choosenFormat = TABTXTFileFormat.getInstance();
             }
             break;
             
@@ -22,7 +27,7 @@ class FileFormatFactory {
             break;
             
             case JSON:{
-                choosenFormat = new JSONFileFormat();
+                choosenFormat = JSONFileFormat.getInstance();
             }
             break;
         }

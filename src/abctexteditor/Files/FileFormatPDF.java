@@ -24,7 +24,9 @@ public class FileFormatPDF implements IFileFormat{
     
     private static FileFormatPDF instance;
     
-    @Override
+    private FileFormatPDF(){
+    }
+    
     public static IFileFormat getInstance() {
         if(instance == null){
             instance = new FileFormatPDF();
