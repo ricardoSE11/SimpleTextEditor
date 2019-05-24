@@ -35,7 +35,7 @@ public class Paragraph {
     public String getText(){
         String text = "";
         for (String currentLine: lines){
-            text += currentLine;  // + "\n" 
+            text += currentLine + "\n" ;  // 
         }
         
         return text;
