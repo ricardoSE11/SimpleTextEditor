@@ -8,5 +8,5 @@ public interface IFileFormat {
     
     public String removeFormat(String fileContent);
     
-    public IFileFormat getInstance();
+    public static IFileFormat getInstance();
 }

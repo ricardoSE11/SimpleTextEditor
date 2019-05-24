@@ -17,7 +17,7 @@ class FileFormatFactory {
             break;
             
             case XML:{
-                choosenFormat = new XMLFileFormat();
+                choosenFormat = XMLFileFormat.getInstance();
             }
             break;
             

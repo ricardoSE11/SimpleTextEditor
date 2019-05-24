@@ -7,9 +7,15 @@ import java.util.ArrayList;
 
 public class JSONFileFormat implements IFileFormat{
 
-    public JSONFileFormat() {
-    }
+    private static IFileFormat singletonInstance = null;
 
+    @Override
+    public static IFileFormat getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = new JSONFileFormat();
+        }
+        return singletonInstance;
+    }
     
     @Override
     public String applyFormat(String fileContent) {
@@ -145,11 +151,5 @@ public class JSONFileFormat implements IFileFormat{
     }
     
     // </editor-fold>
-
-    @Override
-    public IFileFormat getInstance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 
 }
