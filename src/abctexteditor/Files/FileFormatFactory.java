@@ -30,6 +30,16 @@ class FileFormatFactory {
                 choosenFormat = JSONFileFormat.getInstance();
             }
             break;
+            
+            case PDF:{
+                choosenFormat = FileFormatPDF.getInstance();
+            }
+            break;
+            
+            case CSV:{
+                choosenFormat = FileFormatCsv.getInstance();
+            }
+            break;
         }
         
         
