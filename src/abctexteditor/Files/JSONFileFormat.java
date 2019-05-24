@@ -9,7 +9,9 @@ public class JSONFileFormat implements IFileFormat{
 
     private static IFileFormat singletonInstance = null;
 
-    @Override
+    private JSONFileFormat() {
+    }
+
     public static IFileFormat getInstance() {
         if (singletonInstance == null) {
             singletonInstance = new JSONFileFormat();

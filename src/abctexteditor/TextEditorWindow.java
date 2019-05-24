@@ -476,7 +476,6 @@ public class TextEditorWindow extends javax.swing.JFrame {
     }
     
     public void openFile() {
-        System.out.println("OPEN FILE ");
         try {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Select a file to open");
@@ -506,10 +505,7 @@ public class TextEditorWindow extends javax.swing.JFrame {
             String fileExtension = getFileExtension(fileName).toUpperCase();
 
             FileExtension extension = FileExtension.valueOf(fileExtension);
-            System.out.println("Extension: " + extension.toString());
-            System.out.println("Content: " + fileContent);
             String unformattedText = fileFormatter.unformatFile(fileContent, extension);
-            System.out.println("FT: " + unformattedText);
 
             textArea.setText(unformattedText);
             this.setTitle(windowTitle + " - " + fileName);

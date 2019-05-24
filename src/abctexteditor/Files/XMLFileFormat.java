@@ -5,7 +5,9 @@ public class XMLFileFormat implements IFileFormat{
 
     private static IFileFormat singletonInstance = null;
 
-    @Override
+    private XMLFileFormat() {
+    }
+    
     public static IFileFormat getInstance() {
         if (singletonInstance == null) {
             singletonInstance = new XMLFileFormat();
