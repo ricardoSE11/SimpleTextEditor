@@ -33,8 +33,8 @@ public class FileFormatCsv implements IFileFormat{
     }
     @Override
     public String applyFormat(String fileContent) {
-        //try {
-            impresion = fileContent.replaceAll(" ", ";");
+        
+        impresion = fileContent.replaceAll(" ", ";");
         return impresion;
     }
 
@@ -45,13 +45,4 @@ public class FileFormatCsv implements IFileFormat{
     return impresion;
     }
 
-    @Override
-    public String applyColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String removeColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
