@@ -42,6 +42,7 @@ public class FileFormatCsv implements IFileFormat{
     public String removeFormat(String fileContent) {
     impresion="";
     impresion = fileContent.replaceAll(";"," ");
+    System.out.println("Return " + impresion);
     return impresion;
     }
 
