@@ -32,4 +32,12 @@ public class ColorSetting {
         return "Color: "+ Integer.toString(color) + " Start: "+ Integer.toString(start)
             + " End: "+ Integer.toString(end);
     }
+    
+    public int getDifference(){
+        return (end - start);
+    }
+    
+    public int getStart(){
+        return start;
+    }
 }
