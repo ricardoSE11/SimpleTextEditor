@@ -53,7 +53,7 @@ public class FileFormatCsv implements IFileFormat{
         while ((line = br.readLine()) != null) {
             impresion+=line;
         }*/
-    impresion = impresion.replaceAll(";"," ");/*
+    impresion = fileContent.replaceAll(";"," ");/*
         }catch (FileNotFoundException ex) {
             Logger.getLogger(FileFormatCsv.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
