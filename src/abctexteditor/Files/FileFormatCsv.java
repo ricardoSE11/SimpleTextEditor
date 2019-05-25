@@ -34,31 +34,13 @@ public class FileFormatCsv implements IFileFormat{
     public String applyFormat(String fileContent) {
         //try {
             impresion = fileContent.replaceAll(" ", ";");
-            /*writer = new PrintWriter("ArchivoCsv.csv", "UTF-8");
-            writer.print(impresion);
-            writer.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(FileFormatCsv.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(FileFormatCsv.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
         return impresion;
     }
 
     @Override
     public String removeFormat(String fileContent) {
-    /*try (BufferedReader br = new BufferedReader(new FileReader("ArchivoCsv.csv"))) {*/
-    impresion="";/*
-        String line;
-        while ((line = br.readLine()) != null) {
-            impresion+=line;
-        }*/
-    impresion = fileContent.replaceAll(";"," ");/*
-        }catch (FileNotFoundException ex) {
-            Logger.getLogger(FileFormatCsv.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(FileFormatCsv.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+    impresion="";
+    impresion = fileContent.replaceAll(";"," ");
     return impresion;
     }
 }
