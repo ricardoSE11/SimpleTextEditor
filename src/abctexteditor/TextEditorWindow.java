@@ -20,6 +20,7 @@ import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -49,6 +50,10 @@ public class TextEditorWindow extends javax.swing.JFrame {
     private StyledDocument document;
     //It will have the text color configuration, sorted by position
     private ArrayList<ColorSetting> colors;
+    private int lenght_of_document_before_change;
+    private int lenght_of_document_after_change;
+    private int previous_caretPosition;
+    private int caretPosition;
     
     public TextEditorWindow() {
         initComponents();
@@ -293,7 +298,7 @@ public class TextEditorWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    // FIXME
+   
     private void menuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNewActionPerformed
         if (currentFile != null && documentListener.detectedChanges()){ // Missing attribute that checks if it has been changed 
             int choosenOption = JOptionPane.showConfirmDialog(null, "Do you want to save before closing?", "Wait!" , JOptionPane.YES_NO_OPTION);
@@ -377,6 +382,60 @@ public class TextEditorWindow extends javax.swing.JFrame {
         changeColorOfSelectedText(Color.GREEN, 5);
     }//GEN-LAST:event_colorMenuItemGreenActionPerformed
 
+    private void textAreaKeyTyped(java.awt.event.KeyEvent evt) {
+        this.caretPosition = textArea.getCaretPosition();
+        this.lenght_of_document_after_change = textArea.getDocument().getLength();
+        if (this.caretPosition != this.previous_caretPosition) {
+            updateColorSettings(this.lenght_of_document_before_change, this.lenght_of_document_after_change,
+                    this.caretPosition);
+        }
+    }
+
+    private void textAreaKeyPressed(java.awt.event.KeyEvent evt) {
+        this.previous_caretPosition = textArea.getCaretPosition();
+        this.lenght_of_document_before_change = textArea.getDocument().getLength();
+    }
+    
+    
+    private void updateColorSettings(int length_before, int lenght_after, int caretPos) {
+        int toAdd = 1;
+        int previous_caretPos = caretPos;
+        boolean isSubstract = false;
+        if (length_before > lenght_after) {
+            toAdd = length_before - lenght_after;
+            isSubstract = true;
+            previous_caretPos = caretPos + toAdd;
+        }
+        ArrayList<ColorSetting> to_delete = new ArrayList<>();
+        for (ColorSetting current_colorSetting : this.colors) {
+            int current_start = current_colorSetting.start;
+            int current_end = current_colorSetting.end;
+            if (current_start > caretPos) {
+                if (isSubstract) {
+                    if (toAdd == 1) {
+                        current_colorSetting.start -= toAdd;
+                        current_colorSetting.end -= toAdd;
+                    }
+                } else {
+                    current_colorSetting.start += toAdd;
+                    current_colorSetting.end += toAdd;
+                }
+            } else if (current_start > caretPos && current_end < previous_caretPos) {
+                to_delete.add(current_colorSetting);
+            } else if (current_start > caretPos && previous_caretPos > current_start && previous_caretPos < current_end) {
+                current_colorSetting.start = previous_caretPos;//should I add or substract one?
+            } else if (current_start < caretPos && previous_caretPos > current_start && previous_caretPos < current_end) {
+                current_colorSetting.end = current_start + (caretPos - current_start) + (current_end - previous_caretPos);
+            } else if (current_start < caretPos && caretPos < current_end && current_end < previous_caretPos) {
+                current_colorSetting.end = caretPos;////should I add or substract one?
+            }
+
+        }
+        for (ColorSetting current_colorSetting : to_delete) {
+            this.colors.remove(current_colorSetting);
+        }
+    }
+    
     private void changeColorOfSelectedText(Color color, int color_number)
     {
         int start = textArea.getSelectionStart();
@@ -386,45 +445,283 @@ public class TextEditorWindow extends javax.swing.JFrame {
         StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(oldSet, StyleConstants.Foreground, color);
         this.document.setCharacterAttributes(start, selectedLength, aset, false);
-        addColorSetting(color_number, start, end);
-        
-        //trying to make it revert to black color
-        //AttributeSet revert = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLACK);
-        //int len = textArea.getDocument().getLength();
-        //this.document.setCharacterAttributes(len, len, revert, false);
-        
+        addColorSetting(color_number, start, end);       
     }
     
-    private void addColorSetting(int color_number, int start, int end){
-        ColorSetting new_color_setting = new ColorSetting(color_number, start, end);
-        ColorSetting new_half_two_colorSetting = null;
-        for(ColorSetting current_colorSetting: this.colors){
-            int current_start = current_colorSetting.start;
-            int current_end = current_colorSetting.end;
-            //the currentColorSetting is going to be overwriten
-            if(start < current_start && end > current_end){
-                this.colors.remove(current_colorSetting);
-            }else if(start < current_start && end > current_start && end < current_end){
-                current_colorSetting.start = end + 1;
-            }else if(start > current_start && start < current_end && end > current_end){
-                current_colorSetting.end = start - 1;
-                //the new colorSetting is between the current_ColorSetting
-                //it is necessary split it in two
-            }else if(start > current_start && end < current_end){
-                int new_half_one_end = start - 1;
-                int new_half_two_start = end + 1;
-                current_colorSetting.end = new_half_one_end;
-                new_half_two_colorSetting = new ColorSetting(current_colorSetting.color,  new_half_two_start, current_end);
+    public void loadText(String text) {
+        int counter = - 1;
+        int colored_check = 0;
+        int colored_end = 0;
+        String temp = "";
+        this.colors.clear();
+        boolean started_coloring = false;
+        int current_color = 0;
+        ColorSetting colorSetting;
+        char[] text_char = text.toCharArray();
+        for (int i = 0; i < text_char.length; i++) {
+            char current_char = text_char[i];
+            System.out.print(counter);
+            System.out.print(" ");
+            if (!started_coloring && current_char == '(') {
+                char next_char = text_char[i + 1];
+                colored_check = counter;
+                switch (next_char) {
+                    case '(':
+                        current_color = 1;
+                        i = i + 1;
+                        started_coloring = true;
+                        break;
+                    case '*':
+                        current_color = 2;
+                        i = i + 1;
+                        started_coloring = true;
+                        break;
+                    case '+':
+                        current_color = 3;
+                        i = i + 1;
+                        started_coloring = true;
+                        break;
+                    case '-':
+                        current_color = 4;
+                        i = i + 1;
+                        started_coloring = true;
+                        break;
+                    case '/':
+                        current_color = 5;
+                        i = i + 1;
+                        started_coloring = true;
+                        break;
+                    default:
+                        temp += current_char;
+                        counter += 1;
+                        break;
+                }
+            } else if (started_coloring) {
+                String temporal = "";
+                temporal += current_char;
+                char next_char = text_char[i + 1];
+                temporal += next_char;
+                colored_end = counter + 1;
+                switch (temporal) {
+                    case "))":
+                        if (current_color == 1) {
+                            i = i + 1;
+
+                            colorSetting = new ColorSetting(1, colored_check, colored_end);
+                            this.colors.add(colorSetting);
+                            started_coloring = false;
+                        } else {
+                            //not the same color tag
+                            temp += current_char;
+                        }
+                        break;
+                    case "*)":
+                        if (current_color == 2) {
+                            i = i + 1;
+                            colorSetting = new ColorSetting(2, colored_check, colored_end);
+                            this.colors.add(colorSetting);
+                            started_coloring = false;
+                        } else {
+                            //not the same color tag
+                            temp += current_char;
+                        }
+                        break;
+                    case "+)":
+                        if (current_color == 3) {
+                            i = i + 1;
+                            colorSetting = new ColorSetting(3, colored_check, colored_end);
+                            this.colors.add(colorSetting);
+                            started_coloring = false;
+                        } else {
+                            //not the same color tag
+                            temp += current_char;
+                        }
+                        break;
+                    case "-)":
+                        if (current_color == 4) {
+                            i = i + 1;
+                            colorSetting = new ColorSetting(4, colored_check, colored_end);
+                            this.colors.add(colorSetting);
+                            started_coloring = false;
+                        } else {
+                            //not the same color tag
+                            temp += current_char;
+                        }
+                        break;
+                    case "/)":
+                        if (current_color == 5) {
+                            i = i + 1;
+                            colorSetting = new ColorSetting(5, colored_check, colored_end);
+                            this.colors.add(colorSetting);
+                            started_coloring = false;
+                        } else {
+                            //not the same color tag
+                            temp += current_char;
+                        }
+                        break;
+                    default:
+                        temp += current_char;
+                        counter += 1;
+                        break;
+                }
+            } else {
+                counter += 1;
+                temp += current_char;
             }
         }
-        if(new_half_two_colorSetting != null){
+        System.out.println(this.colors.size());
+        textArea.setText(temp);
+        for (ColorSetting current_colorSetting : this.colors) {
+            System.out.println(current_colorSetting.toString());
+            Color c;
+            switch (current_colorSetting.color) {
+                case 1:
+                    c = Color.BLUE;
+                    break;
+                case 2:
+                    c = Color.RED;
+                    break;
+                case 3:
+                    c = Color.BLACK;
+                    break;
+                case 4:
+                    c = Color.YELLOW;
+                    break;
+                case 5:
+                    c = Color.GREEN;
+                    break;
+                default:
+                    c = Color.DARK_GRAY;
+                    break;
+            }
+            int current_end = current_colorSetting.end;
+            int current_start = current_colorSetting.start;
+            int selectedLength = current_end - current_start;
+            AttributeSet oldSet = this.document.getCharacterElement(current_end - 1).getAttributes();
+            StyleContext sc = StyleContext.getDefaultStyleContext();
+            AttributeSet aset = sc.addAttribute(oldSet, StyleConstants.Foreground, c);
+            this.document.setCharacterAttributes(current_start, selectedLength, aset, true);
+        }
+    }
+    
+    private void addColorSetting(int color_number, int start, int end) {
+        ColorSetting new_color_setting = new ColorSetting(color_number, start, end);
+        ColorSetting new_half_two_colorSetting = null;
+        ArrayList<ColorSetting> to_delete = new ArrayList<>();
+        for (ColorSetting current_colorSetting : this.colors) {
+            int current_start = current_colorSetting.start;
+            int current_end = current_colorSetting.end;
+            if (current_end > start) {
+                //the currentColorSetting is going to be overwriten
+                if (start <= current_start && end >= current_end) {
+                    to_delete.add(current_colorSetting);
+                } else if (start < current_start && end > current_start && end < current_end) {
+                    current_colorSetting.start = end + 1;
+                } else if (start > current_start && start < current_end && end > current_end) {
+                    current_colorSetting.end = start - 1;
+                    //the new colorSetting is between the current_ColorSetting
+                    //it is necessary split it in two
+                } else if (start > current_start && end < current_end) {
+                    int new_half_one_end = start - 1;
+                    int new_half_two_start = end + 1;
+                    current_colorSetting.end = new_half_one_end;
+                    new_half_two_colorSetting = new ColorSetting(current_colorSetting.color, new_half_two_start, current_end);
+                }
+            }
+        }
+        for (ColorSetting current_colorSetting : to_delete) {
+            this.colors.remove(current_colorSetting);
+        }
+        if (new_half_two_colorSetting != null) {
             this.colors.add(new_half_two_colorSetting);
         }
         this.colors.add(new_color_setting);
-        for(ColorSetting colorSetting : this.colors){
-            System.out.println(colorSetting.toString());
-            
+    }
+    
+    public String getColoredText() {
+        String text = textArea.getText() + " ";
+        this.colors.sort(Comparator.comparing(ColorSetting::getStart));
+        String result = "";
+        boolean hasNext = true;
+        ColorSetting current = null;
+        int counter = 0;
+        if (this.colors.size() == 0) {
+            hasNext = false;
         }
+        else{
+            current = this.colors.get(counter);
+        }
+        int textCounter = 0;
+        for (char i : text.toCharArray()) {
+            if (hasNext) {
+                if (textCounter == current.start) {
+                    switch (current.color) {
+                        case 1: {
+                            result += "((";
+                            break;
+                        }
+                        case 2: {
+                            result += "(*";
+                            break;
+                        }
+                        case 3: {
+                            result += "(+";
+                            break;
+                        }
+                        case 4: {
+                            result += "(-";
+                            break;
+                        }
+
+                        case 5: {
+                            result += "(/";
+                            break;
+                        }
+                    }
+                    result += i;
+                    textCounter += 1;
+                } else if (textCounter == current.end) {
+                    switch (current.color) {
+                        case 1: {
+                            result += i + "))";
+                            break;
+                        }
+                        case 2: {
+                            result += i + "*)";
+                            break;
+                        }
+                        case 3: {
+                            result += i + "+)";
+                            break;
+                        }
+                        case 4: {
+                            result += i + "-)";
+                            break;
+                        }
+
+                        case 5: {
+                            result += i + "/)";
+                            break;
+                        }
+                    }
+                    textCounter += 1;
+
+                    if (this.colors.size() > (counter + 1)) {
+                        counter += 1;
+                        current = this.colors.get(counter);
+                    } else {
+                        hasNext = false;
+                    }
+                } else {
+                    textCounter += 1;
+                    result += i;
+                }
+
+            } else {
+                result += i;
+            }
+        }
+        return result;
     }
     
     public void saveFile() {
@@ -437,6 +734,9 @@ public class TextEditorWindow extends javax.swing.JFrame {
 
                 String fileExtension = getFileExtension(fileName).toUpperCase();
                 FileExtension extension = FileExtension.valueOf(fileExtension);
+                
+                fileContent = getColoredText();
+                
                 String formattedText = fileFormatter.formatFile(fileContent, extension);
 
                 FileWriter fileWriter = new FileWriter(currentFile);
@@ -496,8 +796,9 @@ public class TextEditorWindow extends javax.swing.JFrame {
 
             FileExtension extension = FileExtension.valueOf(fileExtension);
             String unformattedText = fileFormatter.unformatFile(fileContent, extension);
+            loadText(unformattedText);
 
-            textArea.setText(unformattedText);
+            //textArea.setText(unformattedText);
             this.setTitle(windowTitle + " - " + fileName);
 
         } catch (Exception e) {
