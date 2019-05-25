@@ -41,7 +41,7 @@ public class FileFormatPDF implements IFileFormat{
         Document document = new Document();
         try
         {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("StylingExample.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Documento.pdf"));
             document.open();
             document.add(new Paragraph(fileContent));
 
@@ -68,7 +68,7 @@ public class FileFormatPDF implements IFileFormat{
         {
             e.printStackTrace();
         }
-      return "";
+      return fileContent;
     }
 
     @Override
