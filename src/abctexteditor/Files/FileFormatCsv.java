@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,5 +43,15 @@ public class FileFormatCsv implements IFileFormat{
     impresion="";
     impresion = fileContent.replaceAll(";"," ");
     return impresion;
+    }
+
+    @Override
+    public String applyColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String removeColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

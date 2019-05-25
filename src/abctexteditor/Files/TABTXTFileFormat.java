@@ -79,4 +79,14 @@ public class TABTXTFileFormat implements IFileFormat{
 
         return untabbedText;
     }
+
+    @Override
+    public String applyColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String removeColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

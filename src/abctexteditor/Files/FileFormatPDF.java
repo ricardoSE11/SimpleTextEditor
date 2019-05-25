@@ -8,6 +8,7 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.util.ArrayList;
 
 
 /*
@@ -74,6 +75,16 @@ public class FileFormatPDF implements IFileFormat{
     @Override
     public String removeFormat(String fileContent) {
         return fileContent;
+    }
+
+    @Override
+    public String applyColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String removeColorFormat(String fileContent, ArrayList<ColorSetting> colors) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     
